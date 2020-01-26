@@ -1,5 +1,8 @@
 # Unofficial Adobe Campaign Standard (ACS) API SDK
 
+![Build](https://github.com/hudovisk/acs-sdk/workflows/Build/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/hudovisk/acs-sdk/badge.svg?branch=master)](https://coveralls.io/github/hudovisk/acs-sdk?branch=master)
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
