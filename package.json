@@ -1,0 +1,89 @@
+{
+  "name": "acs-sdk",
+  "version": "1.0.0",
+  "description": "Unofficial Adobe Campaign Standard API SDK",
+  "keywords": [
+    "Adobe",
+    "Adobe Campaign Standard"
+  ],
+  "main": "dist/acs-sdk.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "Hudo Assenco <hudo.assenco@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "github:hudovisk/acs-sdk"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf dist",
+    "build": "webpack",
+    "start": "webpack -w",
+    "test": "yarn lint && jest --coverage",
+    "test:watch": "jest --watch"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "yarn lint",
+      "pre-push": "yarn test"
+    }
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "collectCoverageFrom": [
+      "src/*.{js,ts}"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@types/jest": "^24.9.1",
+    "@types/jsonwebtoken": "^8.3.7",
+    "@types/node": "^13.5.0",
+    "coveralls": "^3.0.2",
+    "husky": "^4.2.1",
+    "jest": "^25.1.0",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.0",
+    "semantic-release": "^16.0.3",
+    "ts-jest": "^25.0.0",
+    "ts-loader": "^6.2.1",
+    "ts-node": "^8.6.2",
+    "tslint": "^6.0.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.1.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "jsonwebtoken": "^8.5.1"
+  }
+}
