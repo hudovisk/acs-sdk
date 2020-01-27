@@ -38,6 +38,34 @@ export class ACSHttpClient {
     return this.httpClient.post(url, { body, headers });
   }
 
+  /**
+   * https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/managing-profiles/creating-profiles.html
+   *
+   * @param data
+   */
+  async insertProfile(data: Record<string, any>) {
+    const headers = await this.getAuthHeaders();
+    const { orgInstanceId } = this.config;
+
+    const url = `https://mc.adobe.io/${orgInstanceId}/campaign/profileAndServicesExt/profile/`;
+    return this.httpClient.post(url, { body: data, headers });
+  }
+
+  /**
+   * https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/global-concepts/additional-operations/filtering.html
+   *
+   * @param email
+   */
+  async getProfilesByEmail(email: string) {
+    const headers = await this.getAuthHeaders();
+    const { orgInstanceId } = this.config;
+
+    const url = `https://mc.adobe.io/${orgInstanceId}/campaign/profileAndServicesExt/profile/byEmail?email=${email}`;
+    const { body } = await this.httpClient.get(url, { headers });
+
+    return body.content;
+  }
+
   private async getAuthHeaders() {
     const { accessToken, clientId } = await this.authorizer.getAuthenticatedCredentials();
     return {

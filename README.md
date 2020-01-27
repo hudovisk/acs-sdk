@@ -41,6 +41,21 @@ const client = new ACSHttpClient({ orgId: "acme", orgInstanceId: "acme-mkt-stage
   });
   ```
 
+- insertProfile
+  Docs: https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/managing-profiles/creating-profiles.html
+  ```javascript
+  client.insertProfile({
+    email: "email@email.com",
+    customData: "customValue"
+  });
+  ```
+
+  - getProfilesByEmail
+  Docs: https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/global-concepts/additional-operations/filtering.html
+  ```javascript
+  client.getProfilesByEmail("email@email.com");
+  ```
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
