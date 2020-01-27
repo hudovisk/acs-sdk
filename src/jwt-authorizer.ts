@@ -1,7 +1,6 @@
-import querystring from "querystring";
-import axios, { AxiosInstance } from "axios";
 import { sign as jwtSign } from "jsonwebtoken";
 import { JWTTokenRefresher } from "./jwt-token-refresher";
+import HttpClient from "./http-client";
 
 // https://www.adobe.io/authentication/auth-methods.html#!AdobeDocs/adobeio-auth/master/JWT/Scopes.md#experience-cloud
 export type Metascope = "ent_campaign_sdk";
@@ -21,14 +20,14 @@ const DEFAULT_EXPIRATION_PERIOD_IN_SECONDS = 15 * 60;
 export class JWTAuthorizer {
   private jwtTokenRefresher: JWTTokenRefresher;
   private accessTokenRefresher: JWTTokenRefresher;
-  private httpClient: AxiosInstance;
+  private httpClient: HttpClient;
 
   constructor(
     private credentials: JWTAuthorizerCredentials,
     private expirationPeriodInSeconds = DEFAULT_EXPIRATION_PERIOD_IN_SECONDS,
-    httpClient?: AxiosInstance
+    httpClient?: HttpClient
   ) {
-    this.httpClient = httpClient || axios.create();
+    this.httpClient = httpClient || new HttpClient();
     this.jwtTokenRefresher = new JWTTokenRefresher(this.onRefreshJWTToken);
     this.accessTokenRefresher = new JWTTokenRefresher(this.onRefreshAccessToken);
   }
@@ -69,17 +68,14 @@ export class JWTAuthorizer {
       jwt_token: jwtToken
     };
 
-    const { data } = await this.httpClient.post(
-      "https://ims-na1.adobelogin.com/ims/exchange/jwt",
-      querystring.stringify(payload),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
+    const { body } = await this.httpClient.post("https://ims-na1.adobelogin.com/ims/exchange/jwt", {
+      qs: payload,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
       }
-    );
+    });
 
-    return data.access_token;
+    return body.access_token;
   };
 
   /**

@@ -1,7 +1,8 @@
 {
   "rulesDirectory": ["tslint-plugin-prettier"],
   "rules": {
-    "prettier": true
+    "prettier": true,
+    "max-classes-per-file": false
   },
   "extends": ["tslint:latest", "tslint-config-prettier"]
 }

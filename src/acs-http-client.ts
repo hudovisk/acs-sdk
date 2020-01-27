@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from "axios";
 import { JWTAuthorizer } from "./jwt-authorizer";
+import HttpClient from "./http-client";
 
 export interface ACSClientConfig {
   orgId: string;
@@ -7,7 +7,7 @@ export interface ACSClientConfig {
 }
 
 export class ACSHttpClient {
-  private httpClient: AxiosInstance;
+  private httpClient: HttpClient;
 
   /**
    * https://www.adobe.io/authentication/auth-methods.html#!AdobeDocs/adobeio-auth/master/JWT/JWT.md
@@ -18,9 +18,9 @@ export class ACSHttpClient {
   constructor(
     private config: ACSClientConfig,
     private authorizer: JWTAuthorizer,
-    httpClient?: AxiosInstance
+    httpClient?: HttpClient
   ) {
-    this.httpClient = httpClient || axios.create();
+    this.httpClient = httpClient || new HttpClient();
   }
 
   /**
@@ -34,8 +34,8 @@ export class ACSHttpClient {
     const { orgId, orgInstanceId } = this.config;
 
     const url = `https://mc.adobe.io/${orgInstanceId}/campaign/mc${orgId}/${eventId}`;
-    const payload = { ctx: data };
-    return this.httpClient.post(url, payload, { headers });
+    const body = { ctx: data };
+    return this.httpClient.post(url, { body, headers });
   }
 
   private async getAuthHeaders() {
