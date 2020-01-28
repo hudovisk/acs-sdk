@@ -50,7 +50,7 @@ const client = new ACSHttpClient({ orgId: "acme", orgInstanceId: "acme-mkt-stage
   });
   ```
 
-  - getProfilesByEmail
+- getProfilesByEmail
   Docs: https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/global-concepts/additional-operations/filtering.html
   ```javascript
   client.getProfilesByEmail("email@email.com");
