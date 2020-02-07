@@ -6,6 +6,19 @@ export interface ACSClientConfig {
   orgInstanceId: string;
 }
 
+interface Profile {
+  PKey: string;
+  acsId: string;
+  subscriptions: {
+    href: string;
+  };
+}
+
+interface Service {
+  PKey: string;
+  href: string;
+}
+
 export class ACSHttpClient {
   private httpClient: HttpClient;
 
@@ -27,14 +40,15 @@ export class ACSHttpClient {
    * https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/managing-transactional-messages.html
    *
    * @param eventId
+   * @param email
    * @param data
    */
-  async sendTransactionalEvent(eventId: string, data: Record<string, any>) {
+  async sendTransactionalEvent(eventId: string, email: string, data: Record<string, any>) {
     const headers = await this.getAuthHeaders();
     const { orgId, orgInstanceId } = this.config;
 
     const url = `https://mc.adobe.io/${orgInstanceId}/campaign/mc${orgId}/${eventId}`;
-    const body = { ctx: data };
+    const body = { email, ctx: data };
     return this.httpClient.post(url, { body, headers });
   }
 
@@ -56,7 +70,7 @@ export class ACSHttpClient {
    *
    * @param email
    */
-  async getProfilesByEmail(email: string) {
+  async getProfilesByEmail(email: string): Promise<Profile[]> {
     const headers = await this.getAuthHeaders();
     const { orgInstanceId } = this.config;
 
@@ -64,6 +78,25 @@ export class ACSHttpClient {
     const { body } = await this.httpClient.get(url, { headers });
 
     return body.content;
+  }
+
+  async getServicesByName(name: string): Promise<Service> {
+    const headers = await this.getAuthHeaders();
+
+    const { orgInstanceId } = this.config;
+
+    const url = `https://mc.adobe.io/${orgInstanceId}/campaign/profileAndServicesExt/service/byText?text=${name}`;
+    const { body } = await this.httpClient.get(url, { headers });
+
+    return body.content;
+  }
+
+  async subscribeProfileToService(profile: Profile, service: Service) {
+    const headers = await this.getAuthHeaders();
+
+    const url = profile.subscriptions.href;
+    const body = { service: { PKey: service.PKey } };
+    return this.httpClient.post(url, { body, headers });
   }
 
   private async getAuthHeaders() {
