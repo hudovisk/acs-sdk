@@ -74,7 +74,7 @@ export default class HttpClient {
     const defaultHeaders = () => ({
       "cache-control": "no-cache",
       Accept: "*/*",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     });
 
     const url = `${(options && options.baseUrl) || this.baseUrl}${endpoint}`;
