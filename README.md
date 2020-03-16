@@ -56,6 +56,12 @@ const client = new ACSHttpClient({ orgId: "acme", orgInstanceId: "acme-mkt-stage
   client.getProfilesByEmail("email@email.com");
   ```
 
+- updateProfile
+  Docs: https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/managing-profiles/updating-profiles.html
+  ```javascript
+  client.updateProfile(profile.PKey, { firstName: "Hello", lastName: "World" });
+  ```
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):

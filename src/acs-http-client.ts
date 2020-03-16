@@ -80,6 +80,22 @@ export class ACSHttpClient {
     return body.content;
   }
 
+  /**
+   * https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/managing-profiles/updating-profiles.html
+   *
+   * @param pkey
+   * @param data Profile data
+   */
+  async updateProfile(pkey: string, data: Record<string, any>) {
+    const headers = await this.getAuthHeaders();
+    const { orgInstanceId } = this.config;
+
+    const url = `https://mc.adobe.io/${orgInstanceId}/campaign/profileAndServicesExt/profile/${pkey}`;
+    const { body } = await this.httpClient.patch(url, { headers, body: data });
+
+    return body.content;
+  }
+
   async getServicesByName(name: string): Promise<Service> {
     const headers = await this.getAuthHeaders();
 

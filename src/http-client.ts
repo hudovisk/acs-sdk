@@ -1,6 +1,6 @@
 import superagent from "superagent";
 
-export type RequestMethods = "POST" | "GET";
+export type RequestMethods = "POST" | "GET" | "PATCH";
 export interface RequestParams {
   headers?: { [name: string]: string };
   qs?: object;
@@ -50,6 +50,8 @@ export default class HttpClient {
         return superagent.get;
       case "POST":
         return superagent.post;
+      case "PATCH":
+        return superagent.patch;
     }
   };
 
@@ -64,6 +66,12 @@ export default class HttpClient {
     params: RequestParams,
     options?: RequestOptions
   ): Promise<RequestResponse<T>> => this.request("POST", endpoint, params, options);
+
+  patch = async <T extends object = any>(
+    endpoint: string,
+    params: RequestParams,
+    options?: RequestOptions
+  ): Promise<RequestResponse<T>> => this.request("PATCH", endpoint, params, options);
 
   request = async <T extends object = any>(
     method: RequestMethods,
