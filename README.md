@@ -35,8 +35,7 @@ const client = new ACSHttpClient({ orgId: "acme", orgInstanceId: "acme-mkt-stage
 - sendTransactionalEvent
   Docs: https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/managing-transactional-messages.html
   ```javascript
-  client.sendTransactionalEvent("EVTTest", {
-    email: "email@email.com",
+  client.sendTransactionalEvent("EVTTest", "email@email.com", {
     customData: "customValue"
   });
   ```
