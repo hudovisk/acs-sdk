@@ -49,7 +49,7 @@ export class JWTAuthorizer {
       sub: technicalAccountId,
       aud: `https://ims-na1.adobelogin.com/c/${clientId}`,
       ...metascopesPayload,
-      exp: expiration
+      exp: expiration,
     };
 
     const token = jwtSign(payload, privateKey, { algorithm: "RS256" });
@@ -65,14 +65,14 @@ export class JWTAuthorizer {
     const payload = {
       client_id: this.credentials.clientId,
       client_secret: this.credentials.clientSecret,
-      jwt_token: jwtToken
+      jwt_token: jwtToken,
     };
 
     const { body } = await this.httpClient.post("https://ims-na1.adobelogin.com/ims/exchange/jwt", {
       qs: payload,
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     });
 
     return body.access_token;

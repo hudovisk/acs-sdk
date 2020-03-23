@@ -119,7 +119,7 @@ export class ACSHttpClient {
     const { accessToken, clientId } = await this.authorizer.getAuthenticatedCredentials();
     return {
       Authorization: `Bearer ${accessToken}`,
-      "X-Api-Key": clientId
+      "X-Api-Key": clientId,
     };
   }
 }

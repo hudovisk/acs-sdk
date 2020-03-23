@@ -82,7 +82,7 @@ export default class HttpClient {
     const defaultHeaders = () => ({
       "cache-control": "no-cache",
       Accept: "*/*",
-      "Content-Type": "application/json; charset=utf-8"
+      "Content-Type": "application/json; charset=utf-8",
     });
 
     const url = `${(options && options.baseUrl) || this.baseUrl}${endpoint}`;
@@ -97,7 +97,7 @@ export default class HttpClient {
         ok: response.ok,
         body: response.body,
         text: response.text,
-        headers: response.header
+        headers: response.header,
       };
     } catch (err) {
       throw this.cleanError(err);
@@ -110,7 +110,7 @@ export default class HttpClient {
       status: err.status,
       text: err.response.error.text,
       path: err.response.error.path,
-      method: err.response.error.method
+      method: err.response.error.method,
     });
   };
 }
