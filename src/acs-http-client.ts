@@ -9,6 +9,7 @@ export interface ACSClientConfig {
 interface Profile {
   PKey: string;
   acsId: string;
+  email: string;
   subscriptions: {
     href: string;
   };
