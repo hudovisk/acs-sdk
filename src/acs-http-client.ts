@@ -75,8 +75,9 @@ export class ACSHttpClient {
     const headers = await this.getAuthHeaders();
     const { orgInstanceId } = this.config;
 
-    const url = `https://mc.adobe.io/${orgInstanceId}/campaign/profileAndServicesExt/profile/byEmail?email=${email}`;
-    const { body } = await this.httpClient.get(url, { headers });
+    const url = `https://mc.adobe.io/${orgInstanceId}/campaign/profileAndServicesExt/profile/byEmail`;
+    const qs = { email };
+    const { body } = await this.httpClient.get(url, { headers, qs });
 
     return body.content;
   }
@@ -102,8 +103,9 @@ export class ACSHttpClient {
 
     const { orgInstanceId } = this.config;
 
-    const url = `https://mc.adobe.io/${orgInstanceId}/campaign/profileAndServicesExt/service/byText?text=${name}`;
-    const { body } = await this.httpClient.get(url, { headers });
+    const url = `https://mc.adobe.io/${orgInstanceId}/campaign/profileAndServicesExt/service/byText`;
+    const qs = { text: name };
+    const { body } = await this.httpClient.get(url, { headers, qs });
 
     return body.content;
   }
