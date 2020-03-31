@@ -32,6 +32,8 @@ const client = new ACSHttpClient({ orgId: "acme", orgInstanceId: "acme-mkt-stage
 
 ### Supported operations:
 
+**NOTE:** In order to have the profiles api you must check the **Add access authorization management fields** in the **Profile** extension, more details [here](https://docs.adobe.com/content/help/en/campaign-standard/using/administrating/users-and-security/organizational-units.html#partitioning-profiles)
+
 - sendTransactionalEvent
   Docs: https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/managing-transactional-messages.html
   ```javascript
