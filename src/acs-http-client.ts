@@ -20,6 +20,12 @@ interface Service {
   href: string;
 }
 
+interface PushDeviceInfo {
+  pushPlatform: "fcm" | "gcm" | "apns";
+  application: string;
+  registrationToken: string;
+}
+
 export class ACSHttpClient {
   private httpClient: HttpClient;
 
@@ -50,6 +56,26 @@ export class ACSHttpClient {
 
     const url = `https://mc.adobe.io/${orgInstanceId}/campaign/mc${orgId}/${eventId}`;
     const body = { email, ctx: data };
+    return this.httpClient.post(url, { body, headers });
+  }
+
+  /**
+   * https://docs.adobe.com/content/help/en/campaign-standard/using/communication-channels/transactional-messaging/transactional-push-notifications.html
+   *
+   * @param eventId
+   * @param data
+   * @param deviceInfo
+   */
+  async sendTransactionalPushEvent(
+    eventId: string,
+    data: Record<string, string>,
+    deviceInfo?: PushDeviceInfo
+  ) {
+    const headers = await this.getAuthHeaders();
+    const { orgId, orgInstanceId } = this.config;
+
+    const url = `https://mc.adobe.io/${orgInstanceId}/campaign/mc${orgId}/${eventId}`;
+    const body = { ...deviceInfo, ctx: data };
     return this.httpClient.post(url, { body, headers });
   }
 

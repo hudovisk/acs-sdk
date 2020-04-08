@@ -42,6 +42,20 @@ const client = new ACSHttpClient({ orgId: "acme", orgInstanceId: "acme-mkt-stage
   });
   ```
 
+- sendTransactionalPushEvent
+  Docs: https://docs.adobe.com/content/help/en/campaign-standard/using/communication-channels/transactional-messaging/transactional-push-notifications.html
+  ```javascript
+  client.sendTransactionalPushEvent(
+    "EVTPushTest",
+    { customData: "customValue" },
+    {
+      pushPlatform: "apns",
+      application: "applicationName",
+      registrationToken: "token",
+    }
+  );
+  ```
+
 - insertProfile
   Docs: https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/managing-profiles/creating-profiles.html
   ```javascript
