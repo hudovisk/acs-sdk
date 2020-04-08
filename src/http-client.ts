@@ -9,6 +9,8 @@ export interface RequestParams {
 export interface RequestOptions {
   /** Overrides class baseUrl */
   baseUrl?: string;
+  timeout?: number;
+  maxRetries?: number;
 }
 export interface RequestResponseErrorDetails {
   status: number;
@@ -38,10 +40,14 @@ export interface RequestResponse<T extends object> {
 }
 
 export default class HttpClient {
-  private baseUrl: string;
+  private defaultRequestOptions: RequestOptions;
 
-  constructor(baseUrl?: string) {
-    this.baseUrl = baseUrl || "";
+  constructor(defaultRequestOptions?: RequestOptions) {
+    this.defaultRequestOptions = {
+      timeout: 5000,
+      maxRetries: 3,
+      ...defaultRequestOptions,
+    };
   }
 
   private methodFactory = (method: RequestMethods) => {
@@ -85,11 +91,16 @@ export default class HttpClient {
       "Content-Type": "application/json; charset=utf-8",
     });
 
-    const url = `${(options && options.baseUrl) || this.baseUrl}${endpoint}`;
+    const requestOptions: RequestOptions = { ...this.defaultRequestOptions, ...options };
+    const url = `${requestOptions.baseUrl || ""}${endpoint}`;
     try {
       const response = await this.methodFactory(method)(url)
         .query(params.qs || {})
         .set({ ...defaultHeaders(), ...params.headers })
+        .timeout({
+          response: requestOptions.timeout,
+        })
+        .retry(requestOptions.maxRetries)
         .send(params.body);
 
       return {
