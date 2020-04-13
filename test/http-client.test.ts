@@ -1,35 +1,29 @@
-import mockserver from "mockserver-node";
-import { mockServerClient } from "mockserver-client";
+import nock from "nock";
 
 import HttpClient from "../src/http-client";
 
-const port = 5000;
-const urlHost = `http://localhost:${port}`;
-
-const expectationsMockClient = mockServerClient("localhost", port);
+const urlHost = `http://localhost`;
+const path = "/";
 
 describe("HTTP Client", () => {
-  beforeAll(() => mockserver.start_mockserver({ serverPort: port }));
-  afterAll(() => mockserver.stop_mockserver({ serverPort: port }));
-  beforeEach(() => expectationsMockClient.reset());
+  let httpClient: HttpClient;
+  let nockScope: nock.Scope;
 
-  it("should fail on timed out", async () => {
-    expect.assertions(1);
-    const path = "/";
-    const httpClient = new HttpClient({
+  beforeEach(() => {
+    nock.cleanAll();
+    nockScope = nock(urlHost);
+
+    httpClient = new HttpClient({
       baseUrl: urlHost,
       timeout: 250,
       maxRetries: 3,
     });
+  });
 
-    await expectationsMockClient.mockAnyResponse({
-      httpRequest: { path },
-      httpResponse: {
-        body: "OK",
-        delay: { timeUnit: "MILLISECONDS", value: 500 },
-      },
-      times: { unlimited: true },
-    });
+  it("should fail on timed out", async () => {
+    expect.assertions(1);
+
+    nockScope.post(path).delay(500).reply(200, "ok").persist();
 
     return httpClient.post(path, {}).catch((e: Error) => {
       expect(e.message).toMatch("timeout");
@@ -38,31 +32,8 @@ describe("HTTP Client", () => {
 
   it("should success on timed out retry", async () => {
     expect.assertions(1);
-    const path = "/";
 
-    const httpClient = new HttpClient({
-      baseUrl: urlHost,
-      timeout: 250,
-      maxRetries: 3,
-    });
-
-    await expectationsMockClient.mockAnyResponse({
-      httpRequest: { path },
-      httpResponse: {
-        body: "OK",
-        delay: { timeUnit: "MILLISECONDS", value: 500 },
-      },
-      times: { remainingTimes: 1, unlimited: false },
-    });
-
-    await expectationsMockClient.mockAnyResponse({
-      httpRequest: { path },
-      httpResponse: {
-        body: "OK",
-        delay: { timeUnit: "MILLISECONDS", value: 100 },
-      },
-      times: { remainingTimes: 1, unlimited: false },
-    });
+    nockScope.post(path).times(2).delay(500).reply(200, "OK").post(path).reply(200, "OK");
 
     return httpClient.post(path, {}).then((response) => {
       expect(response.text).toMatch("OK");
@@ -71,19 +42,8 @@ describe("HTTP Client", () => {
 
   it("should fail on multiple 503", async () => {
     expect.assertions(1);
-    const path = "/";
 
-    const httpClient = new HttpClient({
-      baseUrl: urlHost,
-      timeout: 250,
-      maxRetries: 3,
-    });
-
-    await expectationsMockClient.mockAnyResponse({
-      httpRequest: { path },
-      httpResponse: { statusCode: 503 },
-      times: { unlimited: true },
-    });
+    nockScope.post(path).reply(503).persist();
 
     return httpClient.post(path, {}).catch((err) => {
       expect(err.status).toBe(503);
