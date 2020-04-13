@@ -9,7 +9,7 @@ const urlHost = `http://localhost:${port}`;
 const expectationsMockClient = mockServerClient("localhost", port);
 
 describe("HTTP Client", () => {
-  beforeAll(() => mockserver.start_mockserver({ serverPort: port, verbose: true }));
+  beforeAll(() => mockserver.start_mockserver({ serverPort: port }));
   afterAll(() => mockserver.stop_mockserver({ serverPort: port }));
   beforeEach(() => expectationsMockClient.reset());
 
