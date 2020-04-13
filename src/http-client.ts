@@ -1,4 +1,5 @@
 import superagent from "superagent";
+import util from "util";
 
 export type RequestMethods = "POST" | "GET" | "PATCH";
 export interface RequestParams {
@@ -94,7 +95,7 @@ export default class HttpClient {
     const requestOptions: RequestOptions = { ...this.defaultRequestOptions, ...options };
     const url = `${requestOptions.baseUrl || ""}${endpoint}`;
     try {
-      const response = await this.methodFactory(method)(url)
+      const request = this.methodFactory(method)(url)
         .query(params.qs || {})
         .set({ ...defaultHeaders(), ...params.headers })
         .timeout({
@@ -102,6 +103,11 @@ export default class HttpClient {
         })
         .retry(requestOptions.maxRetries)
         .send(params.body);
+
+      // We must wait for end callback otherwise it will throw on timeout without
+      // retrying!
+      const endRequest = util.promisify(request.end.bind(request));
+      const response = await endRequest();
 
       return {
         status: response.status,
@@ -111,17 +117,30 @@ export default class HttpClient {
         headers: response.header,
       };
     } catch (err) {
-      throw this.cleanError(err);
+      throw this.cleanError(err, { endpoint, method });
     }
   };
 
-  private cleanError = (err: any): RequestResponseError => {
+  private cleanError = (
+    err: any,
+    requestDetails: { endpoint: string; method: RequestMethods }
+  ): RequestResponseError => {
+    if (err.response) {
+      throw new RequestResponseError({
+        message: err.response.error.message,
+        status: err.status,
+        text: err.response.error.text,
+        path: err.response.error.path,
+        method: err.response.error.method,
+      });
+    }
+
     throw new RequestResponseError({
-      message: err.response.error.message,
-      status: err.status,
-      text: err.response.error.text,
-      path: err.response.error.path,
-      method: err.response.error.method,
+      message: err.retries ? `${err.message}. Retries: ${err.retries}` : err.message,
+      status: 0,
+      text: err.message,
+      path: requestDetails.endpoint,
+      method: requestDetails.method,
     });
   };
 }
