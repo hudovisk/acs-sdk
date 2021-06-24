@@ -42,6 +42,13 @@ const client = new ACSHttpClient({ orgId: "acme", orgInstanceId: "acme-mkt-stage
   });
   ```
 
+- getTransactionalEvent
+  Docs: https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/managing-transactional-messages.html#response-to-the-post-request
+
+  ```javascript
+  client.getTransactionalEvent("EVTTest", "adobe-event-pkey");
+  ```
+
 - sendTransactionalPushEvent
   Docs: https://docs.adobe.com/content/help/en/campaign-standard/using/communication-channels/transactional-messaging/transactional-push-notifications.html
   ```javascript
