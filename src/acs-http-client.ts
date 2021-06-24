@@ -60,6 +60,20 @@ export class ACSHttpClient {
   }
 
   /**
+   * https://docs.adobe.com/content/help/en/campaign-standard/using/working-with-apis/managing-transactional-messages.html#response-to-the-post-request
+   *
+   * @param eventId
+   * @param PKey
+   */
+  async getTransactionalEvent(eventId: string, PKey: string) {
+    const headers = await this.getAuthHeaders();
+    const { orgId, orgInstanceId } = this.config;
+
+    const url = `https://mc.adobe.io/${orgInstanceId}/campaign/mc${orgId}/${eventId}/${PKey}`;
+    return this.httpClient.get(url, { headers });
+  }
+
+  /**
    * https://docs.adobe.com/content/help/en/campaign-standard/using/communication-channels/transactional-messaging/transactional-push-notifications.html
    *
    * @param eventId
